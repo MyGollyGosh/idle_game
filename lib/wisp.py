@@ -3,27 +3,21 @@ import pygame
 class Wisp:
     def __init__(self):
         self.asset = pygame.image.load('assets/wisp.png').convert_alpha()
-        self.x_pos = 500
-        self.y_pos = 20
-        self.at_bottom = False
-        self.rect = self.asset.get_rect(midbottom = (500, 20))
-        self.pos = (self.x_pos, self.y_pos)
+        self.rect = self.asset.get_rect(midbottom=(500, 100))
+        self.hit_bottom = False
+        self.float_speed = 20
+        self.base_y = float(self.rect.top)
+        self.top_limit = self.base_y - 4
+        self.bottom_limit = self.base_y + 4
 
-    def move_down(self):
-        self.y_pos+=.25
-        if self.y_pos==30:
-            self.at_bottom = True
-        self.pos = (self.x_pos, self.y_pos)
-
-    def move_up(self):
-        self.y_pos-=.25
-        if self.y_pos==20:
-            self.at_bottom = False
-        self.pos = (self.x_pos, self.y_pos)
-
-    def wisp_movement(self):
-        if self.at_bottom:
-            self.move_up()
+    def wisp_movement(self, dt):
+        if not self.hit_bottom:
+            self.base_y += self.float_speed * dt
+            if self.base_y >= self.bottom_limit:
+                self.hit_bottom = True
         else:
-            self.move_down()
+            self.base_y -= self.float_speed * dt
+            if self.base_y <= self.top_limit:
+                self.hit_bottom = False
 
+        self.rect.top = round(self.base_y)
