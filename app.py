@@ -18,10 +18,11 @@ class Game:
         self.background = pygame.image.load('assets/grass.png').convert_alpha()
         self.wisp = Wisp()
         self.player = Player()
-        self.player_pos = pygame.Vector2(640, 360)
+
         
 
     def run(self):
+
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -29,30 +30,21 @@ class Game:
 
             self.screen.fill('white')
 
-
             self.screen.blit(self.background, (0,0))
             self.screen.blit(self.wisp.asset, (self.wisp.pos))
             self.wisp.wisp_movement()
             self.screen.blit(self.house, (10 ,10))
             self.screen.blit(self.tavern, (850, 10))
             self.screen.blit(self.blacksmith, (10, 475))
-            self.screen.blit(self.player.asset, self.player_pos)
-
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_w]:
-                self.player_pos.y -= 300 * self.dt
-            if keys[pygame.K_s]:
-                self.player_pos.y += 300 * self.dt
-            if keys[pygame.K_a]:
-                self.player_pos.x -= 300 * self.dt
-            if keys[pygame.K_d]:
-                self.player_pos.x += 300 * self.dt
-
-
-            pygame.display.flip()
+            self.screen.blit(self.player.asset, self.player.rect)
+            keys_pressed = pygame.key.get_pressed()
+            self.player.move(keys_pressed)
 
             self.dt = self.clock.tick(60) / 1000
 
+            pygame.display.flip()
+            
+    
     pygame.quit()
 
 if __name__=='__main__':

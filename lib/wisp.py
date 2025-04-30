@@ -6,6 +6,7 @@ class Wisp:
         self.x_pos = 500
         self.y_pos = 20
         self.at_bottom = False
+        self.rect = self.asset.get_rect(midbottom = (500, 20))
         self.pos = (self.x_pos, self.y_pos)
 
     def move_down(self):
@@ -25,3 +26,4 @@ class Wisp:
             self.move_up()
         else:
             self.move_down()
+
