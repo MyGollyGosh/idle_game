@@ -20,8 +20,8 @@ class Game:
         self.player.add(Player())
         self.house = pygame.sprite.GroupSingle()
         self.house.add(House())
-        self.in_overworld = True
-        self.in_house = False
+
+        self.state = 'in overworld'
 
 
     def run(self):
@@ -31,7 +31,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
-            if self.in_overworld:
+            if self.state == 'in overworld':
                 self.background = pygame.image.load('assets/grass.png').convert_alpha()
                 self.screen.fill('white')
 
@@ -49,12 +49,11 @@ class Game:
                     self.screen.blit(self.wisp.sprite.text, (535,30))
                 
                 if pygame.sprite.collide_rect(self.player.sprite, self.house.sprite):
-                    self.in_overworld = False
-                    self.in_house = True
+                    self.state = 'in house'
                     self.player.sprite.rect.bottom = 700
                     self.player.sprite.rect.right = 700
 
-            if self.in_house:
+            if self.state == 'in house':
                 self.background = pygame.image.load('assets/floorboards.png')
                 self.screen.fill('white')
                 self.screen.blit(self.background, (0,0))
