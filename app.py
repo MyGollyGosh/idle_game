@@ -31,6 +31,7 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
 
+            
             if self.state == 'in overworld':
                 self.background = pygame.image.load('assets/grass.png').convert_alpha()
                 self.screen.fill('white')
@@ -41,9 +42,6 @@ class Game:
                 self.house.draw(self.screen)
                 self.screen.blit(self.tavern, (850, 10))
                 self.screen.blit(self.blacksmith, (10, 475))
-                #screen.blit(surface, rect -> places the surface inside the rect)
-                self.player.draw(self.screen)
-                self.player.update()
 
                 if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
                     self.screen.blit(self.wisp.sprite.text, (535,30))
@@ -57,10 +55,9 @@ class Game:
                 self.background = pygame.image.load('assets/floorboards.png')
                 self.screen.fill('white')
                 self.screen.blit(self.background, (0,0))
-                self.player.draw(self.screen)
-                self.player.update()
                 
-                
+            self.player.draw(self.screen)
+            self.player.update()
 
             self.dt = self.clock.tick(60) / 1000
 
