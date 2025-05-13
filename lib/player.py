@@ -13,7 +13,6 @@ class Player(pygame.sprite.Sprite):
         self.move_down_animation = self.extract_frames(6, 1, 3)
         self.move_left_animation = [pygame.transform.flip(frame, True, False) for frame in self.extract_frames(6, 1, 4)]
         self.move_right_animation = self.extract_frames(6,1, 4)
-        print(self.move_left_animation)
 
         self.current_animation = self.idle_animation
         self.frame_index = 0

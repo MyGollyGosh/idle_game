@@ -2,8 +2,21 @@ import pygame
 from lib.wisp import Wisp
 from lib.player import Player
 from lib.house import House
+from lib.town_map import TownMap
 
 pygame.init()
+
+town_layout = [
+    [("grass", 0), ("grass", 0), ("grass", 0)],
+    [("path", 0), ("path", 1), ("path", 0)],
+    [("cliff", 0), ("cliff", 0), ("cliff", 0)]
+]
+
+tilesets = {
+    "grass": "assets/Tiles/Grass_Middle.png",
+    "path": "assets/Tiles/Path_Middle.png",
+    "cliff": "assets/Tiles/Cliff_Tile.png"
+}
 
 class Game:
     def __init__(self):
@@ -20,6 +33,7 @@ class Game:
         self.player.add(Player())
         self.house = pygame.sprite.GroupSingle()
         self.house.add(House())
+        # self.town = TownMap(tilesets, 4, town_layout)
 
         self.state = 'in overworld'
 
@@ -33,15 +47,15 @@ class Game:
 
             
             if self.state == 'in overworld':
-                self.background = pygame.image.load('assets/grass.png').convert_alpha()
                 self.screen.fill('white')
 
+                self.background = pygame.image.load('assets/map.png')
                 self.screen.blit(self.background, (0,0))
                 self.wisp.draw(self.screen)
                 self.wisp.update(self.dt)
                 self.house.draw(self.screen)
-                self.screen.blit(self.tavern, (850, 10))
-                self.screen.blit(self.blacksmith, (10, 475))
+                # self.screen.blit(self.tavern, (850, 10))
+                # self.screen.blit(self.blacksmith, (10, 475))
 
                 if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
                     self.screen.blit(self.wisp.sprite.text, (535,30))
