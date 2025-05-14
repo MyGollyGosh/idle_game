@@ -2,7 +2,6 @@ import pygame
 from lib.wisp import Wisp
 from lib.player import Player
 from lib.house import House
-from lib.town_map import TownMap
 
 pygame.init()
 
@@ -33,7 +32,7 @@ class Game:
         self.player.add(Player())
         self.house = pygame.sprite.GroupSingle()
         self.house.add(House())
-        # self.town = TownMap(tilesets, 4, town_layout)
+        self.obstacles = pygame.sprite.Group()
 
         self.state = 'in overworld'
 
@@ -47,6 +46,9 @@ class Game:
 
             
             if self.state == 'in overworld':
+                self.obstacles.add(self.house)
+                self.player.sprite.obstacles = self.obstacles
+
                 self.screen.fill('white')
 
                 self.background = pygame.image.load('assets/map.png')
@@ -54,16 +56,14 @@ class Game:
                 self.wisp.draw(self.screen)
                 self.wisp.update(self.dt)
                 self.house.draw(self.screen)
-                # self.screen.blit(self.tavern, (850, 10))
-                # self.screen.blit(self.blacksmith, (10, 475))
 
                 if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
                     self.screen.blit(self.wisp.sprite.text, (535,30))
                 
-                if pygame.sprite.collide_rect(self.player.sprite, self.house.sprite):
-                    self.state = 'in house'
-                    self.player.sprite.rect.bottom = 700
-                    self.player.sprite.rect.right = 700
+                # if pygame.sprite.collide_rect(self.player.sprite, self.house.sprite):
+                #     self.state = 'in house'
+                #     self.player.sprite.rect.bottom = 700
+                #     self.player.sprite.rect.right = 700
 
             if self.state == 'in house':
                 self.background = pygame.image.load('assets/floorboards.png')
