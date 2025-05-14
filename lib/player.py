@@ -7,7 +7,6 @@ class Player(pygame.sprite.Sprite):
         self.clock = pygame.time.Clock()
         self.dt = self.clock.tick(60) / 1000
 
-        #animations:
         self.idle_animation = self.extract_frames(6, 1, 0)
         self.move_up_animation = self.extract_frames(6, 1, 5)
         self.move_down_animation = self.extract_frames(6, 1, 3)
@@ -21,6 +20,7 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.current_animation[self.frame_index]
         self.rect = self.image.get_rect(midbottom = (350, 360))
+        self.obstacles = None
 
     def extract_frames(self, columns, rows, start_row=0):
         sheet_width, sheet_height = self.sprite_sheet.get_size()
@@ -36,20 +36,36 @@ class Player(pygame.sprite.Sprite):
 
         return frames
     
+    def check_collision(self):
+        if self.obstacles:
+            for obstacle in self.obstacles:
+                if self.rect.colliderect(obstacle.rect):
+                    return True
+            return False
+    
     def move(self):
         key_pressed = pygame.key.get_pressed()
-        if key_pressed[pygame.K_w]:
+        original_position = self.rect.copy()
+        if key_pressed[pygame.K_w] and self.rect.y > 0:
             self.current_animation = self.move_up_animation
             self.rect.top -= 100 * self.dt
-        if key_pressed[pygame.K_s]:
+            if self.check_collision():
+                self.rect.top = original_position.top
+        if key_pressed[pygame.K_s] and self.rect.y < 690:
             self.current_animation = self.move_down_animation
             self.rect.bottom += 100 * self.dt
-        if key_pressed[pygame.K_a]:
+            if self.check_collision():
+                self.rect.bottom = original_position.bottom
+        if key_pressed[pygame.K_a] and self.rect.x > 0:
             self.current_animation = self.move_left_animation
             self.rect.left -= 100 * self.dt
-        if key_pressed[pygame.K_d]:
+            if self.check_collision():
+                self.rect.left = original_position.left
+        if key_pressed[pygame.K_d] and self.rect.x < 1250:
             self.current_animation = self.move_right_animation
             self.rect.right += 100 * self.dt
+            if self.check_collision():
+                self.rect.right = original_position.right
         
     def animate(self):
         self.time_accumulator += self.dt
