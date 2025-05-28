@@ -8,4 +8,5 @@ Thumbs.db
 
 free_art/
 **/free_art/
+.env
 
