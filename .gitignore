@@ -10,3 +10,9 @@ free_art/
 **/free_art/
 .env
 
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
