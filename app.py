@@ -30,8 +30,10 @@ class Game:
         self.wisp.add(Wisp())
         self.player = pygame.sprite.GroupSingle()
         self.player.add(Player())
-        self.house = pygame.sprite.GroupSingle()
-        self.house.add(House())
+        self.house1 = pygame.sprite.GroupSingle()
+        self.house1.add(House(220, 230))
+        self.house2 = pygame.sprite.GroupSingle()
+        self.house2.add(House(150, 580))
         self.obstacles = pygame.sprite.Group()
 
         self.state = 'in overworld'
@@ -47,16 +49,16 @@ class Game:
 
             
             if self.state == 'in overworld':
-                self.obstacles.add(self.house)
+                self.obstacles.add(self.house1)
+                self.obstacles.add(self.house2)
                 self.player.sprite.obstacles = self.obstacles
-
-                self.screen.fill('white')
 
                 self.background = pygame.image.load('assets/map.png')
                 self.screen.blit(self.background, (0,0))
                 self.wisp.draw(self.screen)
                 self.wisp.update(self.dt)
-                self.house.draw(self.screen)
+                self.house1.draw(self.screen)
+                self.house2.draw(self.screen)
 
                 if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
                     self.screen.blit(self.wisp.sprite.text, (535,30))
