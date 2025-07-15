@@ -15,30 +15,20 @@ def generate_output(user_prompt):
     else:
         print("GROQ_API_KEY not set")
 
+    # The context in which chatGPT will respond
     system_message = """
-    You are a sage that retells stories of heroes. You are scribing the adventures of a hero in no more than 50 words with the following
+    You are a sage that retells stories of heroes. You are retelling the adventures of a hero in no more than 50 words
     """
 
-    # Here is where we can do some prompt engineering - we are adding to the system message and creating our endpoint as it were.
-    # prompt_engineering = """
-    # The last 24 hours
-    # """
 
-    # We add the prompt engineering to the system message
-    # system_message += prompt_engineering
-
-
-    # We create our user prompt and will add all of these to the payload.
+    # What we say to chatGPT
     user_prompt = "Tell the story of the last 24 hours"
-
-
-    # OpenAI works was trained with a list of messages - system, user, assistant - so using this is most effective
 
     prompts = [
         {"role": "system", "content": system_message},
         {"role": "user", "content": user_prompt},
     ]
-    # we will get back as we have seen previously an 'assistant' message.
+
     response = client.chat.completions.create(
         model="llama-3.3-70b-versatile", messages=prompts, temperature=2
     )
