@@ -3,11 +3,12 @@ from lib.wisp import Wisp
 from lib.player import Player
 from lib.house import House
 from lib.tile import Tile
+from lib.tree import Tree
 
 pygame.init()
 
 map = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
-       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
+       [0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0],
        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 3, 3, 3, 3, 3, 0, 0, 3, 0, 0],
        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0, 0, 0, 3, 0, 0, 3, 0, 0],
@@ -75,7 +76,7 @@ class Game:
         self.obstacles = pygame.sprite.Group()
         self.invisible_obstacles = pygame.sprite.Group()
 
-        self.cliff_path = 'free_art/Cute_Fantasy_Free/Tiles/Cliff_Tile.png'
+        self.tree_path = 'free_art/Cute_Fantasy_Free/Outdoor decoration/Oak_Tree.png'
         self.water_path = 'free_art/Cute_Fantasy_Free/Tiles/Water_Middle.png'
 
         self.state = 'in overworld'
@@ -92,11 +93,11 @@ class Game:
                     self.obstacles.add(water)
 
                 if item == 2:
-                    cliff = Tile(x,y+16, self.cliff_path)
-                    self.obstacles.add(cliff)
+                    tree = Tree(x,y+16)
+                    self.obstacles.add(tree)
 
                 if item == 3:
-                    tile = Tile(x,y)
+                    tile = Tile(x,y, None, False)
                     self.invisible_obstacles.add(tile)
 
     def run(self):
@@ -126,8 +127,8 @@ class Game:
                 self.player.update()
                 self.obstacles.draw(self.screen)
                 # Uncomment to draw invis obstacles
-                # for obstacle in self.invisible_obstacles:
-                #     pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
+                for obstacle in self.invisible_obstacles:
+                    pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
                 self.wisp.draw(self.screen)
                 self.wisp.update(self.dt)
 
