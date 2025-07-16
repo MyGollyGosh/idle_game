@@ -126,8 +126,8 @@ class Game:
                 self.player.update()
                 self.obstacles.draw(self.screen)
                 # Uncomment to draw invis obstacles
-                for obstacle in self.invisible_obstacles:
-                    pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
+                # for obstacle in self.invisible_obstacles:
+                #     pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
                 self.wisp.draw(self.screen)
                 self.wisp.update(self.dt)
 
@@ -140,12 +140,11 @@ class Game:
                 #     self.player.sprite.rect.bottom = 700
                 #     self.player.sprite.rect.right = 700
 
-            if self.state == 'in house':
-                self.background = pygame.image.load('assets/floorboards.png')
-                self.screen.fill('white')
-                self.screen.blit(self.background, (0,0))
+            # if self.state == 'in house':
+            #     self.background = pygame.image.load('assets/floorboards.png')
+            #     self.screen.fill('white')
+            #     self.screen.blit(self.background, (0,0))
                 
-
             self.dt = self.clock.tick(60) / 1000
 
             pygame.display.flip()
