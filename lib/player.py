@@ -30,6 +30,7 @@ class Player(pygame.sprite.Sprite):
         
         self.obstacles = None
         self.invisible_obstacles = None
+        self.transition_tiles = None
 
     def extract_frames(self, columns, rows, start_row=0):
         sheet_width, sheet_height = self.sprite_sheet.get_size()
