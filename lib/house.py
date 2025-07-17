@@ -5,6 +5,7 @@ class House(pygame.sprite.Sprite):
         super().__init__()
         self.image = pygame.image.load('assets/house.png').convert_alpha()
         self.rect = pygame.Rect((x-35, y-115), (0, 0))
+        self.collision_rect = self.rect
 
         '''
         y = up

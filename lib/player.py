@@ -48,7 +48,7 @@ class Player(pygame.sprite.Sprite):
     def check_collision(self):
         if self.obstacles:
             for obstacle in self.obstacles:
-                if self.hitbox.colliderect(obstacle.rect):
+                if self.hitbox.colliderect(obstacle.collision_rect):
                     return True
         if self.invisible_obstacles:
             for obstacle in self.invisible_obstacles:
