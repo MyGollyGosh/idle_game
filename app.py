@@ -2,8 +2,9 @@ import pygame
 from lib.wisp import Wisp
 from lib.player import Player
 from lib.house import House
-from lib.tile import Tile
 from lib.tree import Tree
+from lib.water import Water
+from lib.invisible_obstacle import InvisibleObstacle
 
 pygame.init()
 
@@ -89,7 +90,7 @@ class Game:
             for item in row:
                 x+=16
                 if item == 1:
-                    water = Tile(x,y, self.water_path)
+                    water = Water(x,y)
                     self.obstacles.add(water)
 
                 if item == 2:
@@ -97,8 +98,8 @@ class Game:
                     self.obstacles.add(tree)
 
                 if item == 3:
-                    tile = Tile(x,y, None, False)
-                    self.invisible_obstacles.add(tile)
+                    invis_obstacle = InvisibleObstacle(x,y)
+                    self.invisible_obstacles.add(invis_obstacle)
 
     def run(self):
 
