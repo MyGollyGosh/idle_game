@@ -20,7 +20,7 @@ class Player(pygame.sprite.Sprite):
 
         self.image = self.current_animation[self.frame_index]
         
-        self.rect = self.image.get_rect(midbottom = (350, 360))
+        self.rect = self.image.get_rect(midbottom = (640, 360))
         
         hitbox_width = int(self.rect.width * 0.5)
         hitbox_height = int(self.rect.height * 0.5)

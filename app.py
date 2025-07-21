@@ -6,12 +6,10 @@ from lib.tiles.tree import Tree
 from lib.tiles.water import Water
 from lib.tiles.invisible_obstacle import InvisibleObstacle
 from lib.tiles.transition_tile import TransitionTile
-from lib.tile_map.map import overworld_map
+from lib.tile_maps.overworld import overworld_map
+from lib.tile_maps.house import house_map
 
 pygame.init()
-
-
-
 
 class Game:
     def __init__(self):
@@ -40,11 +38,11 @@ class Game:
         self.invisible_obstacles = pygame.sprite.Group()
         self.transition_tiles = pygame.sprite.Group()
 
-        self.state = 'in overworld'
+        self.state = 'in house'
 
-    def make_map(self):
+    def make_map(self, map):
         y = -16
-        for row in overworld_map:
+        for row in map:
             y+=16
             x=-16
             for item in row:
@@ -67,7 +65,7 @@ class Game:
 
     def run(self):
 
-        self.make_map()
+        self.make_map(overworld_map)
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -103,17 +101,30 @@ class Game:
 
                 for tile in self.transition_tiles:
                     if pygame.sprite.collide_rect(self.player.sprite, tile):
-                        self.state = self.state
+                        self.state = 'in house'
                         self.player.sprite.rect.bottom = 700
                         self.player.sprite.rect.right = 700
                 
-                # if pygame.sprite.collide_rect(self.player.sprite, self.house1.sprite):
-                #     self.state = 'in house'
-
             if self.state == 'in house':
-                self.background = pygame.image.load('assets/floorboards.png')
-                self.screen.fill('white')
-                self.screen.blit(self.background, (0,0))
+                self.obstacles.empty()
+                self.invisible_obstacles.empty()
+                self.transition_tiles.empty()
+                self.make_map(house_map)
+                self.player.sprite.obstacles = self.obstacles
+                self.player.sprite.invisible_obstacles = self.invisible_obstacles
+                self.player.sprite.transition_tiles = self.transition_tiles
+
+                self.background = pygame.image.load('assets/floor.png')
+                self.screen.fill('black')
+                self.screen.blit(self.background, (570,280))
+                self.player.draw(self.screen)
+                self.player.update()
+                self.obstacles.draw(self.screen)
+
+                # Uncomment to draw invis obstacles
+                # for obstacle in self.invisible_obstacles:
+                #     pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
+
                 
             self.dt = self.clock.tick(60) / 1000
 
