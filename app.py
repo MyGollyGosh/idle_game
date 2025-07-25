@@ -37,40 +37,37 @@ class Game:
         self.obstacles = pygame.sprite.Group()
         self.invisible_obstacles = pygame.sprite.Group()
         self.transition_tiles = pygame.sprite.Group()
+        self.map_made = False
 
-        self.state = 'in house'
+        self.state = 'in overworld'
 
     def make_map(self, map):
-        y = -16
-        for row in map:
-            y+=16
-            x=-16
-            for item in row:
-                x+=16
-                if item == 1:
-                    water = Water(x,y)
-                    self.obstacles.add(water)
+        if not self.map_made:
+            self.obstacles.empty()
+            self.invisible_obstacles.empty()
+            self.transition_tiles.empty()
+            y = -16
+            for row in map:
+                y+=16
+                x=-16
+                for item in row:
+                    x+=16
+                    if item == 1:
+                        water = Water(x,y)
+                        self.obstacles.add(water)
 
-                if item == 2:
-                    tree = Tree(x,y)
-                    self.obstacles.add(tree)
+                    if item == 2:
+                        tree = Tree(x,y)
+                        self.obstacles.add(tree)
 
-                if item == 3:
-                    invis_obstacle = InvisibleObstacle(x,y)
-                    self.invisible_obstacles.add(invis_obstacle)
+                    if item == 3:
+                        invis_obstacle = InvisibleObstacle(x,y)
+                        self.invisible_obstacles.add(invis_obstacle)
 
-                if item == 4:
-                    transition_tile = TransitionTile(x,y)
-                    self.transition_tiles.add(transition_tile)
-
-    def run(self):
-
-        self.make_map(overworld_map)
-        while self.running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                    
+                    if item == 4:
+                        transition_tile = TransitionTile(x,y)
+                        self.transition_tiles.add(transition_tile)
+            
             if self.state == 'in overworld':
                 if self.house1 not in self.obstacles:
                     self.obstacles.add(self.house1)
@@ -81,10 +78,42 @@ class Game:
                 if self.house4 not in self.obstacles:
                     self.obstacles.add(self.house4)
 
-                self.player.sprite.obstacles = self.obstacles
-                self.player.sprite.invisible_obstacles = self.invisible_obstacles
-                self.player.sprite.transition_tiles = self.transition_tiles
+            self.player.sprite.obstacles = self.obstacles
+            self.player.sprite.invisible_obstacles = self.invisible_obstacles
+            self.player.sprite.transition_tiles = self.transition_tiles
 
+            self.map_made = True
+
+    def check_for_transition(self):
+        for tile in self.transition_tiles:
+            if pygame.sprite.collide_rect(self.player.sprite, tile):
+                self.map_made = False
+                if self.state == 'in overworld':
+                    self.state = 'in house'
+                    self.player.sprite.rect.bottom = 450
+                    self.player.sprite.rect.right = 660
+                elif self.state == 'in house':
+                    self.state = 'in overworld'
+                    self.player.sprite.rect.bottom = 350
+                    self.player.sprite.rect.right = 510
+
+    def start_game(self):
+        self.make_map(overworld_map)
+
+
+    def run(self):
+
+        self.start_game()
+
+        while self.running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.running = False
+
+            self.check_for_transition()
+
+            if self.state == 'in overworld':
+                self.make_map(overworld_map)
                 self.background = pygame.image.load('assets/map.png')
                 self.screen.blit(self.background, (0,0))
                 self.player.draw(self.screen)
@@ -98,32 +127,21 @@ class Game:
 
                 if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
                     self.screen.blit(self.wisp.sprite.text, (535,30))
-
-                for tile in self.transition_tiles:
-                    if pygame.sprite.collide_rect(self.player.sprite, tile):
-                        self.state = 'in house'
-                        self.player.sprite.rect.bottom = 700
-                        self.player.sprite.rect.right = 700
-                
+             
             if self.state == 'in house':
-                self.obstacles.empty()
-                self.invisible_obstacles.empty()
-                self.transition_tiles.empty()
                 self.make_map(house_map)
-                self.player.sprite.obstacles = self.obstacles
-                self.player.sprite.invisible_obstacles = self.invisible_obstacles
-                self.player.sprite.transition_tiles = self.transition_tiles
-
                 self.background = pygame.image.load('assets/floor.png')
                 self.screen.fill('black')
-                self.screen.blit(self.background, (570,280))
+                self.screen.blit(self.background, (565,280))
                 self.player.draw(self.screen)
                 self.player.update()
                 self.obstacles.draw(self.screen)
-
                 # Uncomment to draw invis obstacles
-                # for obstacle in self.invisible_obstacles:
-                #     pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
+                for obstacle in self.invisible_obstacles:
+                    pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
+
+
+
 
                 
             self.dt = self.clock.tick(60) / 1000
