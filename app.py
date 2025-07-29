@@ -164,13 +164,13 @@ class Game:
                     self.screen.blit(self.wisp.sprite.text, (535,30))
              
             if self.state == 'in house':
-                self.display_message()
                 self.background = pygame.image.load('assets/floor.png')
                 self.screen.fill('black')
                 self.screen.blit(self.background, (565,280))
                 self.player.draw(self.screen)
                 self.player.update()
                 self.obstacles.draw(self.screen)
+                self.display_message()
                 # Uncomment to draw invis obstacles
                 # for obstacle in self.invisible_obstacles:
                 #     pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
