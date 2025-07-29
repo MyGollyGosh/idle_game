@@ -11,13 +11,20 @@ from lib.tile_maps.house import house_map
 
 pygame.init()
 
+
+
 class Game:
     def __init__(self):
         self.screen = pygame.display.set_mode((1280, 720))
         self.clock = pygame.time.Clock()
         self.running = True
         self.dt = 0 
+        self.game_time_accumulator = 0
         self.background = None
+        self.WHITE = (255,255,255)
+        self.BLACK = (0,0,0)
+        pygame.font.init()
+        self.font = pygame.font.SysFont(None, 40)
 
         self.wisp = pygame.sprite.GroupSingle()
         self.wisp.add(Wisp())
@@ -39,7 +46,7 @@ class Game:
         self.transition_tiles = pygame.sprite.Group()
         self.map_made = False
 
-        self.state = 'in overworld'
+        self.state = 'starting'
 
     def make_map(self, map):
         if not self.map_made:
@@ -68,7 +75,7 @@ class Game:
                         transition_tile = TransitionTile(x,y)
                         self.transition_tiles.add(transition_tile)
             
-            if self.state == 'in overworld':
+            if self.state == 'in overworld' or self.state == 'starting':
                 if self.house1 not in self.obstacles:
                     self.obstacles.add(self.house1)
                 if self.house2 not in self.obstacles:
@@ -92,28 +99,56 @@ class Game:
                     self.state = 'in house'
                     self.player.sprite.rect.bottom = 450
                     self.player.sprite.rect.right = 660
+                    self.make_map(house_map)
+
                 elif self.state == 'in house':
                     self.state = 'in overworld'
                     self.player.sprite.rect.bottom = 350
                     self.player.sprite.rect.right = 510
+                    self.make_map(overworld_map)
 
-    def start_game(self):
-        self.make_map(overworld_map)
+    def display_message(self):
+        if self.state == 'starting':
+            textbox_width = 1300
+            textbox_height = 80
+            textbox_x = 1280 // 2 - textbox_width // 2
+            textbox_y = 720 - textbox_height - 30
+            textbox_values = (textbox_x, textbox_y, textbox_width, textbox_height)
+            text = self.font.render("I've been busy while you've been away!", True, self.BLACK)
 
+            pygame.draw.rect(self.screen, self.WHITE, (textbox_values), border_radius=10)
+            text_rect = text.get_rect(center=(1280 // 2, textbox_y + textbox_height // 2))
+            self.screen.blit(text, text_rect)
+        elif self.state == 'in house':
+            textbox_width = 1300
+            textbox_height = 80
+            textbox_x = 1280 // 2 - textbox_width // 2
+            textbox_y = 720 - textbox_height - 30
+            textbox_values = (textbox_x, textbox_y, textbox_width, textbox_height)
+            text = self.font.render("I guess no one lives here?", True, self.BLACK)
+
+            pygame.draw.rect(self.screen, self.WHITE, (textbox_values), border_radius=10)
+            text_rect = text.get_rect(center=(1280 // 2, textbox_y + textbox_height // 2))
+            self.screen.blit(text, text_rect)
 
     def run(self):
 
-        self.start_game()
+        self.make_map(overworld_map)
 
         while self.running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
 
+            if self.game_time_accumulator < 1:
+                self.display_message()
+                self.game_time_accumulator += self.dt
+                if self.game_time_accumulator > 1:
+                    if self.state == 'starting':
+                        self.state = 'in overworld'
             self.check_for_transition()
 
-            if self.state == 'in overworld':
-                self.make_map(overworld_map)
+            if self.state == 'in overworld' and self.game_time_accumulator > 1:
                 self.background = pygame.image.load('assets/map.png')
                 self.screen.blit(self.background, (0,0))
                 self.player.draw(self.screen)
@@ -129,7 +164,7 @@ class Game:
                     self.screen.blit(self.wisp.sprite.text, (535,30))
              
             if self.state == 'in house':
-                self.make_map(house_map)
+                self.display_message()
                 self.background = pygame.image.load('assets/floor.png')
                 self.screen.fill('black')
                 self.screen.blit(self.background, (565,280))
@@ -137,12 +172,8 @@ class Game:
                 self.player.update()
                 self.obstacles.draw(self.screen)
                 # Uncomment to draw invis obstacles
-                for obstacle in self.invisible_obstacles:
-                    pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
-
-
-
-
+                # for obstacle in self.invisible_obstacles:
+                #     pygame.draw.rect(self.screen, (255,0,0), obstacle.rect)
                 
             self.dt = self.clock.tick(60) / 1000
 

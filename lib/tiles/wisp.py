@@ -40,7 +40,6 @@ class Wisp(pygame.sprite.Sprite):
             conn = sqlite3.connect('stories.db')
             cursor = conn.cursor()
             
-            # Get just the story text from the last entry
             cursor.execute('''
                 SELECT story_text 
                 FROM stories 
@@ -51,7 +50,6 @@ class Wisp(pygame.sprite.Sprite):
             result = cursor.fetchone()
             conn.close()
             
-            # Return the story text or default message
             return result[0] if result else "No stories found"
             
         except sqlite3.Error as e:
