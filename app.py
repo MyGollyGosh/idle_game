@@ -183,10 +183,22 @@ class Game:
                 self.wisp.draw(self.screen)
                 self.wisp.update(self.dt)
 
+                # if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
+                #     rect = pygame.Rect((550,40),(400,200))
+                #     pygame.draw.rect(self.screen, self.BROWN, pygame.Rect((540,30), (420,270)))
+                #     self.render_text_wrapped(self.screen, self.wisp.sprite.text, self.font, self.BLACK, rect)
+
                 if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
-                    rect = pygame.Rect((550,40),(400,200))
-                    pygame.draw.rect(self.screen, self.BROWN, pygame.Rect((540,30), (420,270)))
-                    self.render_text_wrapped(self.screen, self.wisp.sprite.text, self.font, self.BLACK, rect)
+                    key_pressed = pygame.key.get_pressed()
+                    if key_pressed[pygame.K_SPACE]:
+                        rect = pygame.Rect((550,40),(400,200))
+                        pygame.draw.rect(self.screen, self.BROWN, pygame.Rect((540,30), (420,270)))
+                        self.render_text_wrapped(self.screen, self.wisp.sprite.text, self.font, self.BLACK, rect)
+                    else:
+                        rect = pygame.Rect((380,90),(400,200))
+                        self.render_text_wrapped(self.screen, 'Press SPACE to talk', self.font, self.BLACK, rect)
+
+
              
             if self.state == 'in house':
                 self.background = pygame.image.load('assets/floor.png')
