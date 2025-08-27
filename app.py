@@ -23,6 +23,7 @@ class Game:
         self.background = None
         self.WHITE = (255,255,255)
         self.BLACK = (0,0,0)
+        self.BROWN = (196, 164, 132)
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 40)
 
@@ -131,6 +132,28 @@ class Game:
             text_rect = text.get_rect(center=(1280 // 2, textbox_y + textbox_height // 2))
             self.screen.blit(text, text_rect)
 
+    def render_text_wrapped(self, surface, text, font, color, rect, line_spaceing=5):
+        words = text.split(' ')
+        lines = []
+        line = ''
+
+        for word in words:
+            test_line = f'{line} {word}'.strip()
+            test_surface = font.render(test_line, True, color)
+            if test_surface.get_width() <= rect.width:
+                line = test_line
+            else:
+                lines.append(line)
+                line = word
+        lines.append(line)
+
+        y_offset = 0
+        for line in lines:
+            rendered_line = font.render(line, True, color)
+            surface.blit(rendered_line, (rect.x, rect.y + y_offset))
+            y_offset += rendered_line.get_height() + line_spaceing
+
+
     def run(self):
 
         self.make_map(overworld_map)
@@ -161,7 +184,9 @@ class Game:
                 self.wisp.update(self.dt)
 
                 if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
-                    self.screen.blit(self.wisp.sprite.text, (535,30))
+                    rect = pygame.Rect((550,40),(400,200))
+                    pygame.draw.rect(self.screen, self.BROWN, pygame.Rect((540,30), (420,270)))
+                    self.render_text_wrapped(self.screen, self.wisp.sprite.text, self.font, self.BLACK, rect)
              
             if self.state == 'in house':
                 self.background = pygame.image.load('assets/floor.png')

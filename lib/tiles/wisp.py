@@ -1,12 +1,11 @@
 import pygame
-from sqlite_story_script import insert_story
 import sqlite3
 
 class Wisp(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         self.image = pygame.image.load('assets/wisp.png').convert_alpha()
-        self.rect = self.image.get_rect(midbottom=(500, 100))
+        self.rect = self.image.get_rect(midbottom=(500, 200))
         self.hit_bottom = False
         self.float_speed = 15
         self.base_y = float(self.rect.top)
@@ -14,7 +13,7 @@ class Wisp(pygame.sprite.Sprite):
         self.bottom_limit = self.base_y + 4
         pygame.font.init()
         self.font = pygame.font.SysFont("old english text mt", 30)
-        self.text = self.font.render(self.get_last_story(), True, (0,0,0))
+        self.text = self.get_last_story()
 
     def wisp_movement(self, dt):
         if not self.hit_bottom:
@@ -49,7 +48,8 @@ class Wisp(pygame.sprite.Sprite):
             
             result = cursor.fetchone()
             conn.close()
-            
+
+            # print(type(result[0]))
             return result[0] if result else "No stories found"
             
         except sqlite3.Error as e:
