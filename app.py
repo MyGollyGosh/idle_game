@@ -47,6 +47,9 @@ class Game:
         self.transition_tiles = pygame.sprite.Group()
         self.map_made = False
 
+        self.show_wisp_text = False
+        self.text_box_iterator = 8 #text box can fit 8 lines. Start at 8 and iterate through +8
+
         self.state = 'starting'
 
     def make_map(self, map):
@@ -109,28 +112,19 @@ class Game:
                     self.make_map(overworld_map)
 
     def display_message(self):
+        textbox_width = 1300
+        textbox_height = 80
+        textbox_x = 1280 // 2 - textbox_width // 2
+        textbox_y = 720 - textbox_height - 30
+        textbox_values = (textbox_x, textbox_y, textbox_width, textbox_height)
         if self.state == 'starting':
-            textbox_width = 1300
-            textbox_height = 80
-            textbox_x = 1280 // 2 - textbox_width // 2
-            textbox_y = 720 - textbox_height - 30
-            textbox_values = (textbox_x, textbox_y, textbox_width, textbox_height)
             text = self.font.render("I've been busy while you've been away!", True, self.BLACK)
-
-            pygame.draw.rect(self.screen, self.WHITE, (textbox_values), border_radius=10)
-            text_rect = text.get_rect(center=(1280 // 2, textbox_y + textbox_height // 2))
-            self.screen.blit(text, text_rect)
         elif self.state == 'in house':
-            textbox_width = 1300
-            textbox_height = 80
-            textbox_x = 1280 // 2 - textbox_width // 2
-            textbox_y = 720 - textbox_height - 30
-            textbox_values = (textbox_x, textbox_y, textbox_width, textbox_height)
             text = self.font.render("I guess no one lives here?", True, self.BLACK)
 
-            pygame.draw.rect(self.screen, self.WHITE, (textbox_values), border_radius=10)
-            text_rect = text.get_rect(center=(1280 // 2, textbox_y + textbox_height // 2))
-            self.screen.blit(text, text_rect)
+        pygame.draw.rect(self.screen, self.WHITE, (textbox_values), border_radius=10)
+        text_rect = text.get_rect(center=(1280 // 2, textbox_y + textbox_height // 2))
+        self.screen.blit(text, text_rect)
 
     def render_text_wrapped(self, surface, text, font, color, rect, line_spaceing=5):
         words = text.split(' ')
@@ -153,6 +147,15 @@ class Game:
             surface.blit(rendered_line, (rect.x, rect.y + y_offset))
             y_offset += rendered_line.get_height() + line_spaceing
 
+    def display_text_chunks(self, surface, text, font, color, rect, line_spaceing=5):
+        y_offset = 0
+        if text[self.text_box_iterator:]:
+            for line in text[0:self.text_box_iterator]:
+                rendered_line = font.render(line, True, color)
+                surface.blit(rendered_line, (rect.x, rect.y + y_offset))
+                y_offset += rendered_line.get_height() + line_spaceing
+
+
 
     def run(self):
 
@@ -162,6 +165,11 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE and self.show_wisp_text:
+                        self.state = 'talking'
+                    else: #as soon as other key is pressed, will reset.
+                        self.show_wisp_text = False
 
             if self.game_time_accumulator < 1:
                 self.display_message()
@@ -195,11 +203,9 @@ class Game:
 
 
                 if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
-                    key_pressed = pygame.key.get_pressed()
                     rect = pygame.Rect((380,90),(400,200))
                     self.render_text_wrapped(self.screen, 'Press SPACE to talk', self.font, self.BLACK, rect)
-                    if key_pressed[pygame.K_SPACE]:
-                        self.state = 'talking'
+                    self.show_wisp_text = True
 
             if self.state == 'talking':
                 self.background = pygame.image.load('assets/map.png')
@@ -213,7 +219,7 @@ class Game:
                 self.wisp.update(self.dt)
                 rect = pygame.Rect((550,40),(400,200))
                 pygame.draw.rect(self.screen, self.BROWN, pygame.Rect((540,30), (420,270)))
-                self.render_text_wrapped(self.screen, self.wisp.sprite.text, self.font, self.BLACK, rect)
+                self.display_text_chunks(self.screen, self.wisp.sprite.text_split, self.font, self.BLACK, rect)
 
                 exit_textbox_width = 320
                 exit_textbox_height = 80
