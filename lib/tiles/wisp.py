@@ -14,17 +14,17 @@ class Wisp(pygame.sprite.Sprite):
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 40)
         self.BLACK = (0,0,0)
-        # self.text = self.get_last_story()
-        self.text = '''
-                    This is a long string. A very long string. Infact, this string is far too long.
-                    So too long that it won't fit in the text box provided. This is an issue. An
-                    issue that is currently being fixed but, required a nice easy to use string to
-                    work with that won't vary in length or anything of the sort. This very long string
-                    this is too long to fit in the text box is actually too long for the express purpose
-                    of being very long so that is can be fixed. The fix should make it so that you can
-                    scroll through the text in the text box, without going over it. I'm going to need a
-                    function for it and that is what I am doing right now. To fix this too long string.
-                    And fit it in a text box. Thank you for coming to my Ted talk. xoxo'''
+        self.text = self.get_last_story()
+        # self.text = '''
+        #             This is a long string. A very long string. Infact, this string is far too long.
+        #             So too long that it won't fit in the text box provided. This is an issue. An
+        #             issue that is currently being fixed but, required a nice easy to use string to
+        #             work with that won't vary in length or anything of the sort. This very long string
+        #             this is too long to fit in the text box is actually too long for the express purpose
+        #             of being very long so that is can be fixed. The fix should make it so that you can
+        #             scroll through the text in the text box, without going over it. I'm going to need a
+        #             function for it and that is what I am doing right now. To fix this too long string.
+        #             And fit it in a text box. Thank you for coming to my Ted talk. xoxo'''
         self.text_split = self.split_text_into_chunks(self.text)
 
     def wisp_movement(self, dt):
