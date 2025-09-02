@@ -149,11 +149,11 @@ class Game:
 
     def display_text_chunks(self, surface, text, font, color, rect, line_spaceing=5):
         y_offset = 0
-        if text[self.text_box_iterator:]:
-            for line in text[0:self.text_box_iterator]:
-                rendered_line = font.render(line, True, color)
-                surface.blit(rendered_line, (rect.x, rect.y + y_offset))
-                y_offset += rendered_line.get_height() + line_spaceing
+        # if text[self.text_box_iterator:]:
+        for line in text[self.text_box_iterator-8:self.text_box_iterator]:
+            rendered_line = font.render(line, True, color)
+            surface.blit(rendered_line, (rect.x, rect.y + y_offset))
+            y_offset += rendered_line.get_height() + line_spaceing
 
 
 
@@ -166,10 +166,13 @@ class Game:
                 if event.type == pygame.QUIT:
                     self.running = False
                 if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE and self.show_wisp_text:
+                    if self.state == 'talking' and event.key == pygame.K_SPACE and self.text_box_iterator <= len(self.wisp.sprite.text_split):
+                        self.text_box_iterator += 8
+                    elif self.state == 'talking' and event.key == pygame.K_SPACE:
+                        self.state = 'in overworld'
+                        self.text_box_iterator = 8
+                    elif event.key == pygame.K_SPACE and self.show_wisp_text:
                         self.state = 'talking'
-                    else: #as soon as other key is pressed, will reset.
-                        self.show_wisp_text = False
 
             if self.game_time_accumulator < 1:
                 self.display_message()
@@ -206,13 +209,13 @@ class Game:
                     rect = pygame.Rect((380,90),(400,200))
                     self.render_text_wrapped(self.screen, 'Press SPACE to talk', self.font, self.BLACK, rect)
                     self.show_wisp_text = True
+                else:
+                    self.show_wisp_text = False
 
             if self.state == 'talking':
                 self.background = pygame.image.load('assets/map.png')
                 self.screen.blit(self.background, (0,0))
-
                 self.player.draw(self.screen)
-
                 self.obstacles.draw(self.screen)
 
                 self.wisp.draw(self.screen)
@@ -221,20 +224,19 @@ class Game:
                 pygame.draw.rect(self.screen, self.BROWN, pygame.Rect((540,30), (420,270)))
                 self.display_text_chunks(self.screen, self.wisp.sprite.text_split, self.font, self.BLACK, rect)
 
-                exit_textbox_width = 320
-                exit_textbox_height = 80
-                exit_textbox_x = 1280 // 2 - exit_textbox_width // 2
-                exit_textbox_y = 720 - exit_textbox_height - 30
-                exit_textbox_values = (exit_textbox_x, exit_textbox_y, exit_textbox_width, exit_textbox_height)
-                exit_text = self.font.render("Press RETURN to exit", True, self.BLACK)
+                if self.text_box_iterator >= len(self.wisp.sprite.text_split):
+                    exit_textbox_width = 320
+                    exit_textbox_height = 80
+                    exit_textbox_x = 1280 // 2 - exit_textbox_width // 2
+                    exit_textbox_y = 720 - exit_textbox_height - 30
+                    exit_textbox_values = (exit_textbox_x, exit_textbox_y, exit_textbox_width, exit_textbox_height)
+                    exit_text = self.font.render("Press SPACE to exit", True, self.BLACK)
 
-                pygame.draw.rect(self.screen, self.WHITE, (exit_textbox_values))
-                exit_text_rect = exit_text.get_rect(center=(1280 // 2, exit_textbox_y + exit_textbox_height // 2))
-                self.screen.blit(exit_text, exit_text_rect)
+                    pygame.draw.rect(self.screen, self.WHITE, (exit_textbox_values))
+                    exit_text_rect = exit_text.get_rect(center=(1280 // 2, exit_textbox_y + exit_textbox_height // 2))
+                    self.screen.blit(exit_text, exit_text_rect)
 
-                key_pressed = pygame.key.get_pressed()
-                if key_pressed[pygame.K_RETURN]:
-                    self.state = 'in overworld'
+
 
             if self.state == 'in house':
                 self.background = pygame.image.load('assets/floor.png')
