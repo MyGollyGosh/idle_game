@@ -24,8 +24,10 @@ class Game:
         self.WHITE = (255,255,255)
         self.BLACK = (0,0,0)
         self.BROWN = (196, 164, 132)
+        self.TRANSLUCENT = (0,0,0,0)
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 40)
+        self.small_font = pygame.font.SysFont(None, 20)
 
         self.wisp = pygame.sprite.GroupSingle()
         self.wisp.add(Wisp())
@@ -225,16 +227,15 @@ class Game:
                 self.display_text_chunks(self.screen, self.wisp.sprite.text_split, self.font, self.BLACK, rect)
 
                 if self.text_box_iterator >= len(self.wisp.sprite.text_split):
-                    exit_textbox_width = 320
-                    exit_textbox_height = 80
-                    exit_textbox_x = 1280 // 2 - exit_textbox_width // 2
-                    exit_textbox_y = 720 - exit_textbox_height - 30
-                    exit_textbox_values = (exit_textbox_x, exit_textbox_y, exit_textbox_width, exit_textbox_height)
-                    exit_text = self.font.render("Press SPACE to exit", True, self.BLACK)
+                    # exit_textbox_width = 320
+                    # exit_textbox_height = 80
+                    # exit_textbox_x = 1280 // 2 - exit_textbox_width // 2
+                    # exit_textbox_y = 720 - exit_textbox_height - 30
+                    # exit_textbox_values = (exit_textbox_x, exit_textbox_y, exit_textbox_width, exit_textbox_height)
+                    exit_text = self.small_font.render("Press SPACE to exit", True, self.BLACK)
 
-                    pygame.draw.rect(self.screen, self.WHITE, (exit_textbox_values))
-                    exit_text_rect = exit_text.get_rect(center=(1280 // 2, exit_textbox_y + exit_textbox_height // 2))
-                    self.screen.blit(exit_text, exit_text_rect)
+                    # exit_text_rect = exit_text.get_rect(center=(1280 // 2, exit_textbox_y + exit_textbox_height // 2))
+                    self.screen.blit(exit_text, (680, 270))
 
 
 
