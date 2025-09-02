@@ -24,7 +24,6 @@ class Game:
         self.WHITE = (255,255,255)
         self.BLACK = (0,0,0)
         self.BROWN = (196, 164, 132)
-        self.TRANSLUCENT = (0,0,0,0)
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 40)
         self.small_font = pygame.font.SysFont(None, 20)
@@ -151,12 +150,10 @@ class Game:
 
     def display_text_chunks(self, surface, text, font, color, rect, line_spaceing=5):
         y_offset = 0
-        # if text[self.text_box_iterator:]:
         for line in text[self.text_box_iterator-8:self.text_box_iterator]:
             rendered_line = font.render(line, True, color)
             surface.blit(rendered_line, (rect.x, rect.y + y_offset))
             y_offset += rendered_line.get_height() + line_spaceing
-
 
 
     def run(self):
@@ -196,17 +193,6 @@ class Game:
                 self.wisp.draw(self.screen)
                 self.wisp.update(self.dt)
 
-                # if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
-                #     key_pressed = pygame.key.get_pressed()
-                #     if key_pressed[pygame.K_SPACE]:
-                #         rect = pygame.Rect((550,40),(400,200))
-                #         pygame.draw.rect(self.screen, self.BROWN, pygame.Rect((540,30), (420,270)))
-                #         self.render_text_wrapped(self.screen, self.wisp.sprite.text, self.font, self.BLACK, rect)
-                #     else:
-                #         rect = pygame.Rect((380,90),(400,200))
-                #         self.render_text_wrapped(self.screen, 'Press SPACE to talk', self.font, self.BLACK, rect)
-
-
                 if pygame.sprite.collide_rect(self.player.sprite, self.wisp.sprite):
                     rect = pygame.Rect((380,90),(400,200))
                     self.render_text_wrapped(self.screen, 'Press SPACE to talk', self.font, self.BLACK, rect)
@@ -227,17 +213,8 @@ class Game:
                 self.display_text_chunks(self.screen, self.wisp.sprite.text_split, self.font, self.BLACK, rect)
 
                 if self.text_box_iterator >= len(self.wisp.sprite.text_split):
-                    # exit_textbox_width = 320
-                    # exit_textbox_height = 80
-                    # exit_textbox_x = 1280 // 2 - exit_textbox_width // 2
-                    # exit_textbox_y = 720 - exit_textbox_height - 30
-                    # exit_textbox_values = (exit_textbox_x, exit_textbox_y, exit_textbox_width, exit_textbox_height)
                     exit_text = self.small_font.render("Press SPACE to exit", True, self.BLACK)
-
-                    # exit_text_rect = exit_text.get_rect(center=(1280 // 2, exit_textbox_y + exit_textbox_height // 2))
                     self.screen.blit(exit_text, (680, 270))
-
-
 
             if self.state == 'in house':
                 self.background = pygame.image.load('assets/floor.png')
