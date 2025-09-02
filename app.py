@@ -215,14 +215,21 @@ class Game:
                 pygame.draw.rect(self.screen, self.BROWN, pygame.Rect((540,30), (420,270)))
                 self.render_text_wrapped(self.screen, self.wisp.sprite.text, self.font, self.BLACK, rect)
 
+                exit_textbox_width = 320
+                exit_textbox_height = 80
+                exit_textbox_x = 1280 // 2 - exit_textbox_width // 2
+                exit_textbox_y = 720 - exit_textbox_height - 30
+                exit_textbox_values = (exit_textbox_x, exit_textbox_y, exit_textbox_width, exit_textbox_height)
+                exit_text = self.font.render("Press RETURN to exit", True, self.BLACK)
+
+                pygame.draw.rect(self.screen, self.WHITE, (exit_textbox_values))
+                exit_text_rect = exit_text.get_rect(center=(1280 // 2, exit_textbox_y + exit_textbox_height // 2))
+                self.screen.blit(exit_text, exit_text_rect)
+
                 key_pressed = pygame.key.get_pressed()
                 if key_pressed[pygame.K_RETURN]:
                     self.state = 'in overworld'
 
-
-
-
-             
             if self.state == 'in house':
                 self.background = pygame.image.load('assets/floor.png')
                 self.screen.fill('black')
