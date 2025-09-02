@@ -49,7 +49,6 @@ class Wisp(pygame.sprite.Sprite):
             result = cursor.fetchone()
             conn.close()
 
-            # print(type(result[0]))
             return result[0] if result else "No stories found"
             
         except sqlite3.Error as e:
